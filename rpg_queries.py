@@ -121,9 +121,7 @@ item_df = get_data (query10, conn)
 print(df)
 
 
-
-
-'''
+query11 = '''
 -- Many weapons does each chacter have?
 SELECT
 	inv.character_id,
@@ -136,6 +134,10 @@ ON inv.item_id = wep.item_ptr_id
 GROUP BY inv.character_id
 LIMIT 20;
 '''
+item_df = get_data (query11, conn)
+print(df)
+
+
 '''
 
 -- On average how many items does each character have?
