@@ -7,14 +7,8 @@ print(conn)
 cursor = conn.cursor()
 dir(cursor)
 
-def get_data (query, conn):
-	'''Function to get data from an SQLite DB'''
-	cursor = conn.cursor()
-	# Get columns from most recent cursor object, I hope
-	columns = list(map(lambda x:x[0], cursor.description))
-	
-	df = pd.DataFrame(data=result, columns=columns)
-	return df
+
+
 
 query1 = '''
 -- Find total number of characters = 302
@@ -107,6 +101,17 @@ print('Total number Weapons:', result)
 print('Total number of Non-weapon Items: ' = query7-query8)
 '''
 
+def get_data (query, conn):
+	'''Function to get data from an SQLite DB'''
+	cursor = conn.cursor()
+	return cursor.execute(query).fetchall()
+	# Get columns from most recent cursor object, I hope
+	# columns = list(map(lambda x:x[0], cursor.description))
+	
+	# df = pd.DataFrame(data=result)
+	# return df
+
+
 query10 = '''
 -- How many items does each character have?
 SELECT
@@ -117,28 +122,29 @@ FROM
 GROUP BY character_id
 LIMIT 20;
 '''
-item_df = get_data (query10, conn)
-print(df)
+# item_df = get_data (query10, conn)
+# [[c1, c2] for zip()]
+# print(item_df)
 
 
-query11 = '''
--- Many weapons does each chacter have?
-SELECT
-	inv.character_id,
-	inv.item_id,
-	wep.item_ptr_id,
-	COUNT(wep.item_ptr_id) as NumWeapons
-FROM charactercreator_character_inventory as inv 
-LEft JOIN armory_weapon as wep 
-ON inv.item_id = wep.item_ptr_id
-GROUP BY inv.character_id
-LIMIT 20;
-'''
-item_df = get_data (query11, conn)
-print(df)
+# query11 = '''
+# -- How many weapons does each chacter have?
+# SELECT
+# 	inv.character_id,
+# 	inv.item_id,
+# 	wep.item_ptr_id,
+# 	COUNT(wep.item_ptr_id) as NumWeapons
+# FROM charactercreator_character_inventory as inv 
+# LEft JOIN armory_weapon as wep 
+# ON inv.item_id = wep.item_ptr_id
+# GROUP BY inv.character_id
+# LIMIT 20;
+# '''
+# item_df = get_data (query11, conn)
+# print(df)
 
 
-'''
+query12 ='''
 
 -- On average how many items does each character have?
 SELECT AVG(NumItems)
@@ -151,10 +157,11 @@ FROM (
 	GROUP BY character_id
 )
 '''
+result = cursor.execute(query12).fetchall()
+print('Average number of Items:', result)
 
 
-
-'''
+query13 ='''
 -- On average how many weapons does each character have?
 SELECT AVG(NumWeapons)
 FROM (
@@ -169,3 +176,7 @@ FROM (
 	GROUP BY inv.character_id
 )
 '''
+result = cursor.execute(query12).fetchall()
+print('Average number of Weapons:', result)
+
+conn.close()

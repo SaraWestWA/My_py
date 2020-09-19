@@ -1,12 +1,12 @@
 import pandas as pd 
 import sqlite3
 
-df = read_csv('buddymove_holiday.csv')
+df = pd.read_csv('buddymove_holiday.csv')
 print(df.shape)
 
 conn = sqlite3.connect('buddymove_holidayiq.sqlite3')
 
-df.to_sql('buddymove', con=conn, if _exists='replace')
+df.to_sql('buddymove', con=conn, if_exists='replace')
 
 cursor = conn.cursor()
 
