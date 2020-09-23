@@ -25,7 +25,6 @@ cursor = conn.cursor()
 CSV_FILEPATH = 'titanic.csv'
 # ################ Create Postgres Table and Add Titanic Data ################
 
-# ---reorder classes so 3 is lowest
 create_titanic_query = '''
 DROP TABLE IF EXISTS titanic;
 CREATE TABLE IF NOT EXISTS titanic (
@@ -41,13 +40,17 @@ CREATE TABLE IF NOT EXISTS titanic (
 )
 '''
 cursor.execute(create_titanic_query)
-# conn.commit()
-
 
 # ################ Retrieve Titanic Data ################
 
 df = pandas.read_csv(CSV_FILEPATH)
 print(df.dtypes)
+
+'''Postgres does not like int64 datatypes, among others. Converting
+all data to strings makes it readable by postgres. Using the "big_query" method
+from elephant_rpg_pipeline did not work. The spaces in the name field
+created a syntax error from cursor.execute(query).
+'''
 
 df = df.applymap(str)
 print(df.dtypes)
@@ -60,39 +63,4 @@ t_query = f'INSERT INTO titanic(survived, pclass, name, sex, age, siblings_spous
 # # execute values because of so many variables?
 execute_values(cursor, t_query, tuple_list)
 
-
-
-# # t_query = '''INSERT INTO titanic
-# #         (survived, pclass, name, sex, age,
-# #     siblings_spouses_aboard, parents_children_aboard,
-# #     fare) VALUES '''
-# # # # Replace trailing ',' with a ';'
-# # # t_query = t_query.rstrip(',') + ';'
-# # # cursor.execute(t_query)
-# # # print(t_query)
-
-
-
-# # with open('titanic.csv', 'r') as passengers:
-# #     reader = csv.reader(passengers, delimiter=',')
-# #     next(reader) # Skip the header row.
-# #     for row in reader:
-# #         cursor.execute(
-# #         t_query,
-# #         row
-# #         )
-
-# # # with open('titanic.csv', 'r') as passengers:
-# # #     first_line = passengers.readline()
-# # #     for person in passengers:
-        
-# # #         t_query += f' ({person}),'
-# # #         t_query = t_query.rstrip(',') + ';'
-# # #         cursor.execute(t_query)
-# # #         print(t_query)
-
-
-
 conn.commit()
-
-conn(close)
